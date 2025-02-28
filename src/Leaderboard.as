@@ -53,9 +53,15 @@ namespace Leaderboard {
 
         for (uint i = 0; i < CMAP.UILayers.Length; i++) {
             CGameUILayer@ Layer = CMAP.UILayers[i];
+            if (Layer is null)
+                continue;
+
+            const int start = Layer.ManialinkPageUtf8.IndexOf('<');
+            const int end = Layer.ManialinkPageUtf8.IndexOf('>');
             if (false
-                || Layer is null
-                || !Layer.ManialinkPageUtf8.Trim().SubStr(0, 64).Contains("_Race_Record")
+                || start == -1
+                || end == -1
+                || !Layer.ManialinkPageUtf8.SubStr(start, end).Contains("UIModule_Race_Record")
             )
                 continue;
 
@@ -65,7 +71,7 @@ namespace Leaderboard {
             CGameManialinkQuad@ Button = cast<CGameManialinkQuad@>(Layer.LocalPage.GetFirstChild("quad-toggle-records-icon"));
             if (Button.ImageUrl == "file://Media/Manialinks/Nadeo/TMGame/Modes/Record/Icon_ArrowLeft.dds")
                 return true;
-            else if (Button.ImageUrl == "file://Media/Manialinks/Nadeo/TMGame/Modes/Record/Icon_WorldRecords.dds")
+            if (Button.ImageUrl == "file://Media/Manialinks/Nadeo/TMGame/Modes/Record/Icon_WorldRecords.dds")
                 return false;
         }
 
