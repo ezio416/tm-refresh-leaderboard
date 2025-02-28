@@ -13,6 +13,9 @@ float ButtonPosY = 0.333;
 [Setting hidden category="Button" name="Show button if leaderboard is collapsed"]
 bool ShowButtonWithCollapsedLeaderboard = false;
 
+[Setting hidden category="Button" name="Hide when Openplanet overlay is hidden"]
+bool InterfaceToggle = false;
+
 [SettingsTab name="Button" icon="Square" order="0"]
 void RenderSettingsButton()
 {
@@ -46,4 +49,5 @@ void RenderSettingsButton()
     UI::Separator();
     UI::Markdown("Show the button if the leaderboard is collapsed, or when the leaderboard is hidden by other plugins (e.g. HUD Picker). **Might improve performance slightly if turned on.** By default turned off.");
     ShowButtonWithCollapsedLeaderboard = UI::Checkbox("Show button if leaderboard is collapsed", ShowButtonWithCollapsedLeaderboard);
+    InterfaceToggle = UI::Checkbox("Hide when Openplanet overlay is hidden", InterfaceToggle);
 }

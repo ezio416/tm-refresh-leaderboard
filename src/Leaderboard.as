@@ -50,7 +50,10 @@ namespace Leaderboard {
         const string[] Gamemodes = {
             "TM_TimeAttack_Online",
             "TM_Campaign_Local",
-            "TM_PlayMap_Local"
+            "TM_PlayMap_Local",
+            "TM_Stunt_Local",
+            "TM_StuntMulti_Online",
+            "TM_StuntSolo_Local"
         };
         // The Archivist script name changes regularly to avoid caching, but this will reliably detect it.
         bool isArchivist = CurGameMode.StartsWith("TM_Archivist_");
