@@ -1,6 +1,9 @@
+// c 2025-02-27
 // m 2025-02-27
 
 namespace Leaderboard {
+    bool visible = false;
+
     const string[] validModes = {
         "TM_Campaign_Local",
         "TM_TimeAttack_Online",
@@ -14,15 +17,14 @@ namespace Leaderboard {
         CGamePlaygroundUIConfig::EUISequence::Finish
     };
 
-    bool isVisible = false;
-
-    void Coroutine() {
+    void Loop() {
         while (true) {
             yield();
 
             try {
-                isVisible = true
+                visible = true
                     && byPauseMenu()
+                    && bySettings()
                     && byStartTime()
                     && byUISequence()
                     && byGameMode()
@@ -30,18 +32,9 @@ namespace Leaderboard {
                     && byManiaLink()
                 ;
             } catch {
-                isVisible = false;
+                visible = false;
             }
         }
-    }
-
-    bool byPauseMenu() {
-        return !GetApp().Network.PlaygroundClientScriptAPI.IsInGameMenuDisplayed;
-    }
-
-    bool byStartTime() {
-        CSmArenaRulesMode@ PlaygroundScript = cast<CSmArenaRulesMode@>(GetApp().PlaygroundScript);
-        return PlaygroundScript is null || PlaygroundScript.StartTime <= 2147483000;
     }
 
     bool byGameMode() {
@@ -50,24 +43,8 @@ namespace Leaderboard {
         return mode.StartsWith("TM_Archivist_") || validModes.Find(mode) > -1;
     }
 
-    bool byUISequence() {
-        return validSequences.Find(GetApp().Network.ClientManiaAppPlayground.UI.UISequence) > -1;
-    }
-
-    bool byPersonalBest() {
-        CTrackMania@ App = cast<CTrackMania@>(GetApp());
-
-        if (App.CurrentProfile.Interface_AlwaysDisplayRecords)
-            return true;
-
-        CGameManiaAppPlayground@ CMAP = App.Network.ClientManiaAppPlayground;
-        const uint pb = CMAP.ScoreMgr.Map_GetRecord_v2(CMAP.UserMgr.Users[0].Id, App.RootMap.EdChallengeId, "PersonalBest", "", "TimeAttack", "");
-
-        return pb != uint(-1) && pb < App.RootMap.TMObjective_GoldTime;
-    }
-
     bool byManiaLink() {
-        if (ShowButtonWithCollapsedLeaderboard)
+        if (S_ShowCollapsed)
             return true;
 
         CGameManiaAppPlayground@ CMAP = GetApp().Network.ClientManiaAppPlayground;
@@ -93,5 +70,34 @@ namespace Leaderboard {
         }
 
         return false;
+    }
+
+    bool byPauseMenu() {
+        return !GetApp().Network.PlaygroundClientScriptAPI.IsInGameMenuDisplayed;
+    }
+
+    bool byPersonalBest() {
+        CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+        if (App.CurrentProfile.Interface_AlwaysDisplayRecords)
+            return true;
+
+        CGameManiaAppPlayground@ CMAP = App.Network.ClientManiaAppPlayground;
+        const uint pb = CMAP.ScoreMgr.Map_GetRecord_v2(CMAP.UserMgr.Users[0].Id, App.RootMap.EdChallengeId, "PersonalBest", "", "TimeAttack", "");
+
+        return pb != uint(-1) && pb < App.RootMap.TMObjective_GoldTime;
+    }
+
+    bool bySettings() {
+        return GetApp().CurrentProfile.Interface_DisplayRecords != CGameUserProfileWrapper::EDisplayRecords::Hide;
+    }
+
+    bool byStartTime() {
+        CSmArenaRulesMode@ PlaygroundScript = cast<CSmArenaRulesMode@>(GetApp().PlaygroundScript);
+        return PlaygroundScript is null || PlaygroundScript.StartTime <= 2147483000;
+    }
+
+    bool byUISequence() {
+        return validSequences.Find(GetApp().Network.ClientManiaAppPlayground.UI.UISequence) > -1;
     }
 }

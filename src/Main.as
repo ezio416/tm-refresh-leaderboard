@@ -1,117 +1,129 @@
+// c 2025-02-27
 // m 2025-02-27
 
-vec2         AbsoluteButtonPosition;
-UI::Texture@ ButtonIcon;
-vec2         ButtonPosition;
-vec2         ButtonSize;
-const vec4   colorHovered            = vec4(vec3(0.15f), 0.8f);
-const vec4   colorNormal             = vec4(vec3(), 0.85f);
-bool         CurrentlyHoveringButton = false;
-bool         CurrentlyInMap          = false;
-bool         PermissionViewRecords   = false;
-float        ScreenHeight;
-float        ScreenWidth;
-const float  sixteenNine = 16.0f / 9.0f;
+UI::Texture@ icon;
+const vec4   colorHovered    = vec4(vec3(0.15f), 0.8f);
+const vec4   colorNormal     = vec4(vec3(), 0.85f);
+const string gray            = "\\$888";
+const string green           = "\\$0F0";
+bool         hovering        = false;
+bool         permViewRecords = false;
+vec2         pos;
+const string red             = "\\$F00";
+bool         refresh         = false;
+const float  sixteenNine     = 16.0f / 9.0f;
 
 void Main() {
-    PermissionViewRecords = Permissions::ViewRecords();
-    @ButtonIcon = UI::LoadTexture("assets/RefreshLB_icon.png");
+    if (!(permViewRecords = Permissions::ViewRecords()))
+        return;
 
-    startnew(Leaderboard::Coroutine);
-    startnew(Refresh::Loop);
+    @icon = UI::LoadTexture("assets/icon.png");
+
+    startnew(Leaderboard::Loop);
+
+    CTrackMania@ App = cast<CTrackMania@>(GetApp());
+
+    while (true) {
+        yield();
+
+        if (refresh) {
+            App.CurrentProfile.Interface_AlwaysDisplayRecords = !App.CurrentProfile.Interface_AlwaysDisplayRecords;
+            yield();
+            App.CurrentProfile.Interface_AlwaysDisplayRecords = !App.CurrentProfile.Interface_AlwaysDisplayRecords;
+
+            trace(Icons::Refresh + " Refreshed Leaderboard");
+            refresh = false;
+        }
+    }
+}
+
+UI::InputBlocking OnMouseButton(bool down, int button, int x, int y) {
+    if (true
+        && down
+        && button == 0
+        && ShouldRun()
+        && x > pos.x
+        && x < pos.x + S_Size.x
+        && y > pos.y
+        && y < pos.y + S_Size.y
+    ) {
+        refresh = true;
+        return UI::InputBlocking::Block;
+    }
+
+    return UI::InputBlocking::DoNothing;
+}
+
+void OnMouseMove(int x, int y) {
+    if (!ShouldRun())
+        return;
+
+    hovering = (true
+        && x > pos.x
+        && x < pos.x + S_Size.x
+        && y > pos.y
+        && y < pos.y + S_Size.y
+    );
 }
 
 void Render() {
-    CTrackMania@ App = cast<CTrackMania@>(GetApp());
-
-    if (false
-        || !PermissionViewRecords
-        || !Leaderboard::isVisible
-        || App.Editor !is null
-        || App.RootMap is null
-        || App.CurrentPlayground is null
-        || !UI::IsGameUIVisible()
-        || (InterfaceToggle && !UI::IsOverlayShown())
-    )
+    if (!ShouldRun() || icon is null)
         return;
 
     UI::DrawList@ DrawList = UI::GetBackgroundDrawList();
 
     DrawList.AddRectFilled(
-        vec4(AbsoluteButtonPosition, ButtonSize),
-        CurrentlyHoveringButton ? colorHovered : colorNormal
+        vec4(pos, S_Size),
+        hovering ? colorHovered : colorNormal
     );
 
-    DrawList.AddImage(ButtonIcon, AbsoluteButtonPosition, ButtonSize, 0xEBEBEB40);
+    DrawList.AddImage(icon, pos, S_Size, 0xEBEBEB40);
 }
 
 void Update(float) {
-    ScreenHeight = Math::Max(1, Draw::GetHeight());
-    ScreenWidth = Math::Max(1, Draw::GetWidth());
+    const vec2 resolution = vec2(
+        Math::Max(1, Draw::GetWidth()),
+        Math::Max(1, Draw::GetHeight())
+    );
 
-    if (AutoPlaceButton) {
-        ButtonSizeX = ButtonSizeY = ScreenHeight / 22.5f;
+    if (S_Size.x <= 0.0f || S_Size.y <= 0.0f)
+        S_Size = vec2(resolution.y / 22.5f);
+
+    if (!S_Manual) {
+        S_Size = vec2(resolution.y / 22.5f);
 
         // Calculate the equivalent position for all resolutions; X = 0.028 on 16/9 display. >16/9 -> offset, <16/9 -> squish
-        const float IdealWidth = Math::Min(ScreenWidth, ScreenHeight * sixteenNine);
-        const float AspectDiff = Math::Max(0.0f, ScreenWidth / ScreenHeight - sixteenNine) / 2.0f;
+        const float idealWidth = Math::Min(resolution.x, resolution.y * sixteenNine);
+        const float aspectDiff = Math::Max(0.0f, resolution.x / resolution.y - sixteenNine) / 2.0f;
 
 #if DEPENDENCY_ULTRAWIDEUIFIX
         // We have a shift value from UltrawideUIFix, convert it to a fraction of a 16/9 display width and subtract it from the default position
-        // PR by @dpeukert: https://github.com/nbeerten/tm-refresh-leaderboard/pull/6
-        ButtonPosX = ((0.028125f - (UltrawideUIFix::GetUiShift() / 320)) * IdealWidth + ScreenHeight * AspectDiff) / ScreenWidth;
+        S_PosX = ((0.028125f - (UltrawideUIFix::GetUiShift() / 320)) * idealWidth + resolution.y * aspectDiff) / resolution.x;
 #else
-        ButtonPosX = (0.028125f * IdealWidth + ScreenHeight * AspectDiff) / ScreenWidth;
+        S_PosX = (0.028125f * idealWidth + resolution.y * aspectDiff) / resolution.x;
 #endif
 
-        ButtonPosY = 0.333f;
+        S_PosY = 0.33333f;
     }
 
-    // Revert size if they are invalid (Size of 0 or lower would hide the button)
-    if (ButtonSizeX <= 0.0f || ButtonSizeY <= 0.0f)
-        ButtonSizeX = ButtonSizeY = ScreenHeight / 22.5f;
-
-    ButtonSize     = vec2(ButtonSizeX, ButtonSizeY);
-    ButtonPosition = vec2(ButtonPosX, ButtonPosY);
-
-    AbsoluteButtonPosition = ButtonPosition * vec2(ScreenWidth, ScreenHeight);
-
-    CTrackMania@ App = cast<CTrackMania>(GetApp());
-    CurrentlyInMap = App.CurrentPlayground !is null && App.RootMap !is null;
+    pos = vec2(resolution.x * S_PosX, resolution.y * S_PosY);
 }
 
-void OnMouseMove(int x, int y) {
-    if (false
-        || !Leaderboard::isVisible
-        || !PermissionViewRecords
-        || !UI::IsGameUIVisible()
-    )
-        return;
-
-    CurrentlyHoveringButton = (true
-        && x > AbsoluteButtonPosition.x
-        && x < AbsoluteButtonPosition.x + ButtonSize.x
-        && y > AbsoluteButtonPosition.y
-        && y < AbsoluteButtonPosition.y + ButtonSize.y
-    );
+bool InMap() {
+    CTrackMania@ App = cast<CTrackMania@>(GetApp());
+    return true
+        && App.Editor is null
+        && App.RootMap !is null
+        && App.CurrentPlayground !is null
+    ;
 }
 
-UI::InputBlocking OnMouseButton(bool down, int button, int x, int y) {
-    if (!PermissionViewRecords || !UI::IsGameUIVisible())
-        return UI::InputBlocking::DoNothing;
-
-    if (true
-        && Leaderboard::isVisible
-        && down
-        && button == 0
-        && x > AbsoluteButtonPosition.x
-        && x < AbsoluteButtonPosition.x + ButtonSize.x
-        && y > AbsoluteButtonPosition.y
-        && y < AbsoluteButtonPosition.y + ButtonSize.y
-    ) {
-        Refresh::Refresh();
-        return UI::InputBlocking::Block;
-    }
-
-    return UI::InputBlocking::DoNothing;
+bool ShouldRun() {
+    return true
+        && permViewRecords
+        && Leaderboard::visible
+        && InMap()
+        && UI::IsGameUIVisible()
+        && (!S_HideWithOP || UI::IsOverlayShown())
+    ;
 }
