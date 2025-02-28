@@ -16,4 +16,5 @@ This Openplanet plugin does the trick of turning "Always display records" off an
 - Others
     - Max Kaye (XertroV)
     - Daniel Peukert (dpeukert)
+    - titisee5
     - W1lla van den Munckhof
