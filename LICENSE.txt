@@ -1,6 +1,11 @@
 MIT License
 
-Copyright (c) 2023 Nils Beerten
+This project incorporates code from the following MIT-licensed projects:
+
+- vscode-clang-format (https://github.com/nbeerten/tm-refresh-leaderboard)
+    Copyright (c) 2022-2024 Nils Beerten
+
+Copyright (c) 2025 Ezio416
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

@@ -1,0 +1,35 @@
+# See: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+
+AlignAfterOpenBracket: BlockIndent
+AlignConsecutiveAssignments:
+  Enabled: true
+  AlignCompound: true
+  PadOperators: true
+AlignConsecutiveDeclarations:
+  Enabled: true
+  AlignFunctionPointers: true
+AlignConsecutiveShortCaseStatements:
+  Enabled: true
+AlignTrailingComments:
+  Kind: Always
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Inline
+BinPackArguments: false
+BreakBeforeBinaryOperators: All
+BreakBeforeTernaryOperators: true
+BreakInheritanceList: AfterColon
+ColumnLimit: 150
+FixNamespaceComments: false
+IndentCaseLabels: true
+IndentPPDirectives: AfterHash
+IndentWidth: 4
+IndentWrappedFunctionNames: true
+LineEnding: LF
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: All
+PointerAlignment: Left
+ReferenceAlignment: Right
+SpaceInEmptyBlock: true
+SpacesBeforeTrailingComments: 2
+SpacesInLineCommentPrefix:
+  Maximum: 1

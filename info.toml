@@ -2,8 +2,8 @@
 name = "Refresh Leaderboard"
 author = "nbeerten"
 category = "Utilities"
-version = "1.4.1"
+version = "1.5.0"
 siteid = 229
 
 [script]
-optional_dependencies = ["UltrawideUIFix"]
+optional_dependencies = [ "UltrawideUIFix" ]
