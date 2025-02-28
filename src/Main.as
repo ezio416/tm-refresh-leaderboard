@@ -58,12 +58,12 @@ void OnMouseMove(int x, int y) {
     if (!ShouldRun())
         return;
 
-    hovering = (true
+    hovering = true
         && x > pos.x
         && x < pos.x + S_Size.x
         && y > pos.y
         && y < pos.y + S_Size.y
-    );
+    ;
 }
 
 void Render() {
