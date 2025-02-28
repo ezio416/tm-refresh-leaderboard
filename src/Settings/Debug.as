@@ -1,13 +1,12 @@
-[Setting category="Debug" name="Log more information" hidden]
-bool MoreLogging = false;
+// m 2025-02-27
 
-[SettingsTab name="Debug" icon="Bug" order="1"]
-void RenderSettingsDebug()
-{
-    SettingsTab::UI::ResetButton('Debug');
+[Setting category="General" name="Log more information"]
+bool S_DebugLog = false;
 
-    UI::Markdown("## Debug Settings");
-    MoreLogging = UI::Checkbox("Log more information", MoreLogging);
+[SettingsTab name="Debug" icon="Bug" order=1]
+void RenderSettingsDebug() {
+    SettingsTab::UI::ResetButton("Debug");
+
     UI::Markdown("## Debug information");
     UI::Text("CurrentlyInMap" + (CurrentlyInMap ? Icons::Check : Icons::Times));
     bool AlwaysDisplayRecords = GetApp().CurrentProfile.Interface_AlwaysDisplayRecords;
