@@ -1,5 +1,29 @@
 // m 2025-02-27
 
+namespace SettingsTab {
+    namespace UI {
+        void ResetButton(const string &in category, const string &in label = "Reset to default", const vec2 &in dummy_size = vec2(0.0f, 2.0f)) {
+            if (UI::Button(label))
+                SettingsTab::resetCategory(category);
+            UI::Dummy(dummy_size);
+        }
+    }
+
+    void resetCategory(const string &in category) {
+        Meta::PluginSetting@[]@ Settings = Meta::ExecutingPlugin().GetSettings();
+
+        for (uint i = 0; i < Settings.Length; i++)
+            if (Settings[i].Category != category)
+                Settings.RemoveAt(i);
+
+        for (uint i = 0; i < Settings.Length; i++)
+            Settings[i].Reset();
+    }
+}
+
+[Setting category="General" name="Log more information"]
+bool S_DebugLog = false;
+
 [Setting hidden category="Button" name="Automatic placement of button"]
 bool AutoPlaceButton = true;
 
@@ -52,4 +76,24 @@ void RenderSettingsButton() {
                  "improve performance slightly if turned on.** By default turned off.");
     ShowButtonWithCollapsedLeaderboard = UI::Checkbox("Show button if leaderboard is collapsed", ShowButtonWithCollapsedLeaderboard);
     InterfaceToggle                    = UI::Checkbox("Hide when Openplanet overlay is hidden", InterfaceToggle);
+}
+
+[SettingsTab name="Debug" icon="Bug" order=1]
+void RenderSettingsDebug() {
+    SettingsTab::UI::ResetButton("Debug");
+
+    UI::Markdown("## Debug information");
+    UI::Text("CurrentlyInMap" + (CurrentlyInMap ? Icons::Check : Icons::Times));
+    bool AlwaysDisplayRecords = GetApp().CurrentProfile.Interface_AlwaysDisplayRecords;
+    UI::Text("AlwaysDisplayRecords" + (AlwaysDisplayRecords ? Icons::Check : Icons::Times));
+    UI::Separator();
+    UI::Markdown("### Items below should all be checked for button to be visible");
+    UI::Text("UI::IsGameUIVisible()" + (UI::IsGameUIVisible() ? Icons::Check : Icons::Times));
+    UI::Text("Leaderboard::isVisible" + (Leaderboard::isVisible ? Icons::Check : Icons::Times));
+    UI::Separator();
+    UI::Markdown("### Button Information");
+    UI::Text("CurrentlyHoveringButton" + (CurrentlyHoveringButton ? Icons::Check : Icons::Times));
+    UI::Text("Size: " + tostring(ButtonSize) + " (X: " + ButtonSizeX + ", Y: " + ButtonSizeY + ")");
+    UI::Text("Position: " + tostring(ButtonPosition));
+    UI::Text("Absolute Position: " + tostring(AbsoluteButtonPosition));
 }
