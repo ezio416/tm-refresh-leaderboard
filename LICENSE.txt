@@ -2,7 +2,7 @@ MIT License
 
 This project incorporates code from the following MIT-licensed projects:
 
-- vscode-clang-format (https://github.com/nbeerten/tm-refresh-leaderboard)
+- tm-refresh-leaderboard (https://github.com/nbeerten/tm-refresh-leaderboard)
     Copyright (c) 2022-2024 Nils Beerten
 
 Copyright (c) 2025 Ezio416
