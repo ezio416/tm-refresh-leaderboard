@@ -1,6 +1,3 @@
-// c 2025-02-27
-// m 2025-02-27
-
 UI::Texture@ icon;
 const vec4   colorHovered    = vec4(vec3(0.15f), 0.8f);
 const vec4   colorNormal     = vec4(vec3(), 0.85f);

@@ -1,6 +1,3 @@
-// c 2025-02-27
-// m 2025-02-27
-
 [Setting category="General" name="Show/hide with Openplanet UI"]
 bool S_HideWithOP = false;
 

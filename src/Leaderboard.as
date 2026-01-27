@@ -1,6 +1,3 @@
-// c 2025-02-27
-// m 2025-02-27
-
 namespace Leaderboard {
     bool visible = false;
 
