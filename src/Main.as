@@ -85,8 +85,8 @@ void Render() {
 
 void Update(float) {
     const vec2 resolution = vec2(
-        Math::Max(1, Draw::GetWidth()),
-        Math::Max(1, Draw::GetHeight())
+        Math::Max(1, Display::GetWidth()),
+        Math::Max(1, Display::GetHeight())
     );
 
     if (false
