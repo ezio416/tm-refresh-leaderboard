@@ -2,7 +2,7 @@
 name = "Refresh Leaderboard"
 author = "nbeerten"
 category = "Utilities"
-version = "1.5.0"
+version = "1.6.0"
 siteid = 229
 
 [script]
