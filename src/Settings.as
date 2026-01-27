@@ -28,25 +28,51 @@ void RenderSettingsDebug() {
 
     string color = gray;
 
-    try { color = Leaderboard::byPauseMenu() ? green : red; } catch { }
+    try {
+        color = Leaderboard::byPauseMenu() ? green : red;
+    } catch { }
     UI::Text(color + "    pause menu");
 
-    try { color = Leaderboard::bySettings() ? green : red; } catch { color = gray; }
+    try {
+        color = Leaderboard::bySettings() ? green : red;
+    } catch {
+        color = gray;
+    }
     UI::Text(color + "    settings");
 
-    try { color = Leaderboard::byStartTime() ? green : red; } catch { color = gray; }
+    try {
+        color = Leaderboard::byStartTime() ? green : red;
+    } catch {
+        color = gray;
+    }
     UI::Text(color + "    start time");
 
-    try { color = Leaderboard::byUISequence() ? green : red; } catch { color = gray; }
+    try {
+        color = Leaderboard::byUISequence() ? green : red;
+    } catch {
+        color = gray;
+    }
     UI::Text(color + "    UI sequence");
 
-    try { color = Leaderboard::byGameMode() ? green : red; } catch { color = gray; }
+    try {
+        color = Leaderboard::byGameMode() ? green : red;
+    } catch {
+        color = gray;
+    }
     UI::Text(color + "    game mode");
 
-    try { color = Leaderboard::byPersonalBest() ? green : red; } catch { color = gray; }
+    try {
+        color = Leaderboard::byPersonalBest() ? green : red;
+    } catch {
+        color = gray;
+    }
     UI::Text(color + "    personal best");
 
-    try { color = Leaderboard::byManiaLink() ? green : red; } catch { color = gray; }
+    try {
+        color = Leaderboard::byManiaLink() ? green : red;
+    } catch {
+        color = gray;
+    }
     UI::Text(color + "    manialink");
 
     UI::SeparatorText("button");

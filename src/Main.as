@@ -11,14 +11,15 @@ bool         refresh         = false;
 const float  sixteenNine     = 16.0f / 9.0f;
 
 void Main() {
-    if (!(permViewRecords = Permissions::ViewRecords()))
+    if (!(permViewRecords = Permissions::ViewRecords())) {
         return;
+    }
 
     @icon = UI::LoadTexture("assets/icon.png");
 
     startnew(Leaderboard::Loop);
 
-    CTrackMania@ App = cast<CTrackMania@>(GetApp());
+    auto App = cast<CTrackMania>(GetApp());
 
     while (true) {
         yield();
@@ -36,13 +37,13 @@ void Main() {
 
 UI::InputBlocking OnMouseButton(bool down, int button, int x, int y) {
     if (true
-        && down
-        && button == 0
-        && ShouldRun()
-        && x > pos.x
-        && x < pos.x + S_Size.x
-        && y > pos.y
-        && y < pos.y + S_Size.y
+        and down
+        and button == 0
+        and ShouldRun()
+        and x > pos.x
+        and x < pos.x + S_Size.x
+        and y > pos.y
+        and y < pos.y + S_Size.y
     ) {
         refresh = true;
         return UI::InputBlocking::Block;
@@ -52,20 +53,25 @@ UI::InputBlocking OnMouseButton(bool down, int button, int x, int y) {
 }
 
 void OnMouseMove(int x, int y) {
-    if (!ShouldRun())
+    if (!ShouldRun()) {
         return;
+    }
 
     hovering = true
-        && x > pos.x
-        && x < pos.x + S_Size.x
-        && y > pos.y
-        && y < pos.y + S_Size.y
+        and x > pos.x
+        and x < pos.x + S_Size.x
+        and y > pos.y
+        and y < pos.y + S_Size.y
     ;
 }
 
 void Render() {
-    if (!ShouldRun() || icon is null)
+    if (false
+        or !ShouldRun()
+        or icon is null
+    ) {
         return;
+    }
 
     UI::DrawList@ DrawList = UI::GetBackgroundDrawList();
 
@@ -83,8 +89,12 @@ void Update(float) {
         Math::Max(1, Draw::GetHeight())
     );
 
-    if (S_Size.x <= 0.0f || S_Size.y <= 0.0f)
+    if (false
+        or S_Size.x <= 0.0f
+        or S_Size.y <= 0.0f
+    ) {
         S_Size = vec2(resolution.y / 22.5f);
+    }
 
     if (!S_Manual) {
         S_Size = vec2(resolution.y / 22.5f);
@@ -107,20 +117,23 @@ void Update(float) {
 }
 
 bool InMap() {
-    CTrackMania@ App = cast<CTrackMania@>(GetApp());
+    auto App = cast<CTrackMania>(GetApp());
     return true
-        && App.Editor is null
-        && App.RootMap !is null
-        && App.CurrentPlayground !is null
+        and App.Editor is null
+        and App.RootMap !is null
+        and App.CurrentPlayground !is null
     ;
 }
 
 bool ShouldRun() {
     return true
-        && permViewRecords
-        && Leaderboard::visible
-        && InMap()
-        && UI::IsGameUIVisible()
-        && (!S_HideWithOP || UI::IsOverlayShown())
+        and permViewRecords
+        and Leaderboard::visible
+        and InMap()
+        and UI::IsGameUIVisible()
+        and (false
+            or !S_HideWithOP
+            or UI::IsOverlayShown()
+        )
     ;
 }
