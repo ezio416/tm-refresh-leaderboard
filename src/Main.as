@@ -38,12 +38,9 @@ void Main() {
 UI::InputBlocking OnMouseButton(bool down, int button, int x, int y) {
     if (true
         and down
+        and hovering
         and button == 0
         and ShouldRun()
-        and x > pos.x
-        and x < pos.x + S_Size.x
-        and y > pos.y
-        and y < pos.y + S_Size.y
     ) {
         refresh = true;
         return UI::InputBlocking::Block;
@@ -67,8 +64,8 @@ void OnMouseMove(int x, int y) {
 
 void Render() {
     if (false
-        or !ShouldRun()
         or icon is null
+        or !ShouldRun()
     ) {
         return;
     }
@@ -128,12 +125,12 @@ bool InMap() {
 bool ShouldRun() {
     return true
         and permViewRecords
-        and Leaderboard::visible
-        and InMap()
         and UI::IsGameUIVisible()
         and (false
             or !S_HideWithOP
             or UI::IsOverlayShown()
         )
+        and Leaderboard::visible
+        and InMap()
     ;
 }

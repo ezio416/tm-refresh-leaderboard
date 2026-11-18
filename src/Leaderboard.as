@@ -16,7 +16,7 @@ namespace Leaderboard {
 
     void Loop() {
         while (true) {
-            yield();
+            sleep(50);
 
             try {
                 visible = true
@@ -42,6 +42,8 @@ namespace Leaderboard {
             or validModes.Find(mode) > -1
         ;
     }
+    
+    int layerIndex = -1;
 
     bool byManiaLink() {
         if (S_ShowCollapsed) {
@@ -55,37 +57,66 @@ namespace Leaderboard {
         ) {
             return false;
         }
+        
+        CGameUILayer@ RecordsLayer;
+        
+        if (true
+            and layerIndex > -1
+            and int(CMAP.UILayers.Length) > layerIndex
+            and IsRecordsLayer(CMAP.UILayers[layerIndex])
+        ) {
+            @RecordsLayer = CMAP.UILayers[layerIndex];
+        } else {
+            layerIndex = -1;
 
-        for (uint i = 0; i < CMAP.UILayers.Length; i++) {
-            CGameUILayer@ Layer = CMAP.UILayers[i];
-            if (Layer is null) {
-                continue;
-            }
+            for (uint i = 0; i < CMAP.UILayers.Length; i++) {
+                CGameUILayer@ Layer = CMAP.UILayers[i];
+                if (Layer is null) {
+                    continue;
+                }
 
-            const int start = Layer.ManialinkPageUtf8.IndexOf('<');
-            const int end = Layer.ManialinkPageUtf8.IndexOf('>');
-            if (false
-                or start == -1
-                or end == -1
-                or !Layer.ManialinkPageUtf8.SubStr(start, end).Contains("UIModule_Race_Record")
-            ) {
-                continue;
-            }
+                if (!IsRecordsLayer(Layer)) {
+                    continue;
+                }
 
-            if (!Layer.IsVisible) {
-                return false;
-            }
+                @RecordsLayer = CMAP.UILayers[i];
+                layerIndex = i;
 
-            auto Button = cast<CGameManialinkQuad>(Layer.LocalPage.GetFirstChild("quad-toggle-records-icon"));
-            if (Button.ImageUrl == "file://Media/Manialinks/Nadeo/TMGame/Modes/Record/Icon_ArrowLeft.dds") {
-                return true;
-            }
-            if (Button.ImageUrl == "file://Media/Manialinks/Nadeo/TMGame/Modes/Record/Icon_WorldRecords.dds") {
-                return false;
+                break;
             }
         }
 
-        return false;
+        if (RecordsLayer is null) {
+            return false;
+        }
+
+        if (!RecordsLayer.IsVisible) {
+            return false;
+        }
+
+        auto Button = cast<CGameManialinkQuad>(RecordsLayer.LocalPage.GetFirstChild("quad-toggle-records-icon"));
+        if (Button.ImageUrl == "file://Media/Manialinks/Nadeo/TMGame/Modes/Record/Icon_ArrowLeft.dds") {
+            return true;
+        }
+        if (Button.ImageUrl == "file://Media/Manialinks/Nadeo/TMGame/Modes/Record/Icon_WorldRecords.dds") {
+            return false;
+        }
+
+        return true;
+    }
+    
+    bool IsRecordsLayer(CGameUILayer@ Layer) {
+        if (Layer is null) {
+            return false;
+        }
+
+        const int start = Layer.ManialinkPageUtf8.IndexOf('<');
+        const int end = Layer.ManialinkPageUtf8.IndexOf('>');
+
+        return true
+            and start > -1
+            and end > -1
+            and Layer.ManialinkPageUtf8.SubStr(start, end).Contains("UIModule_Race_Record");
     }
 
     bool byPauseMenu() {
