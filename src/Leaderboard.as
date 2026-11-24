@@ -114,8 +114,9 @@ namespace Leaderboard {
 
         return true
             and start > -1
-            and end > -1
-            and Layer.ManialinkPageUtf8.SubStr(start, end).Contains("UIModule_Race_Record")
+            and end > 0
+            and end > start + 1
+            and Layer.ManialinkPageUtf8.SubStr(start + 1, end - start - 1).Contains("UIModule_Race_Record")
         ;
     }
 
