@@ -42,7 +42,7 @@ namespace Leaderboard {
             or validModes.Find(mode) > -1
         ;
     }
-    
+
     int layerIndex = -1;
 
     bool byManiaLink() {
@@ -57,9 +57,9 @@ namespace Leaderboard {
         ) {
             return false;
         }
-        
+
         CGameUILayer@ RecordsLayer;
-        
+
         if (true
             and layerIndex > -1
             and int(CMAP.UILayers.Length) > layerIndex
@@ -86,11 +86,10 @@ namespace Leaderboard {
             }
         }
 
-        if (RecordsLayer is null) {
-            return false;
-        }
-
-        if (!RecordsLayer.IsVisible) {
+        if (false
+            or RecordsLayer is null
+            or !RecordsLayer.IsVisible
+        ) {
             return false;
         }
 
@@ -104,7 +103,7 @@ namespace Leaderboard {
 
         return true;
     }
-    
+
     bool IsRecordsLayer(CGameUILayer@ Layer) {
         if (Layer is null) {
             return false;
@@ -116,7 +115,8 @@ namespace Leaderboard {
         return true
             and start > -1
             and end > -1
-            and Layer.ManialinkPageUtf8.SubStr(start, end).Contains("UIModule_Race_Record");
+            and Layer.ManialinkPageUtf8.SubStr(start, end).Contains("UIModule_Race_Record")
+        ;
     }
 
     bool byPauseMenu() {
