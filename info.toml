@@ -3,7 +3,6 @@ name = "Refresh Leaderboard"
 author = "nbeerten"
 category = "Utilities"
 version = "1.6.0"
-siteid = 229
 
 [script]
 optional_dependencies = [ "UltrawideUIFix" ]
